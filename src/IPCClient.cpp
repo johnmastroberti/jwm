@@ -1,16 +1,15 @@
-#include "IPCClient.h"
+#include "IPCClient.hpp"
 
 #include <string.h>
 #include <sys/epoll.h>
 
-#include "util.h"
+#include "util.hpp"
 
-IPCClient *
-ipc_client_new(int fd)
-{
+IPCClient *ipc_client_new(int fd) {
   IPCClient *c = (IPCClient *)malloc(sizeof(IPCClient));
 
-  if (c == NULL) return NULL;
+  if (c == NULL)
+    return NULL;
 
   // Initialize struct
   memset(&c->event, 0, sizeof(struct epoll_event));
@@ -26,9 +25,7 @@ ipc_client_new(int fd)
   return c;
 }
 
-void
-ipc_list_add_client(IPCClientList *list, IPCClient *nc)
-{
+void ipc_list_add_client(IPCClientList *list, IPCClient *nc) {
   DEBUG("Adding client with fd %d to list\n", nc->fd);
 
   if (*list == NULL) {
@@ -44,22 +41,22 @@ ipc_list_add_client(IPCClientList *list, IPCClient *nc)
   }
 }
 
-void
-ipc_list_remove_client(IPCClientList *list, IPCClient *c)
-{
+void ipc_list_remove_client(IPCClientList *list, IPCClient *c) {
   IPCClient *cprev = c->prev;
   IPCClient *cnext = c->next;
 
-  if (cprev != NULL) cprev->next = c->next;
-  if (cnext != NULL) cnext->prev = c->prev;
-  if (c == *list) *list = c->next;
+  if (cprev != NULL)
+    cprev->next = c->next;
+  if (cnext != NULL)
+    cnext->prev = c->prev;
+  if (c == *list)
+    *list = c->next;
 }
 
-IPCClient *
-ipc_list_get_client(IPCClientList list, int fd)
-{
+IPCClient *ipc_list_get_client(IPCClientList list, int fd) {
   for (IPCClient *c = list; c; c = c->next) {
-    if (c->fd == fd) return c;
+    if (c->fd == fd)
+      return c;
   }
 
   return NULL;
